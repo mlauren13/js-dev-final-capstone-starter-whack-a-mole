@@ -3,12 +3,13 @@ const moles = document.querySelectorAll('.mole');
 const startButton = document.querySelector('#start');
 const score = document.querySelector('#score') // Use querySelector() to get the score element
 const timerDisplay = document.querySelector('#timer') // use querySelector() to get the timer element.
+const song = new Audio("https://github.com/gabrielsanchez/erddiagram/blob/main/molesong.mp3?raw=true");
 
 let time = 0;
 let timer;
 let lastHole = 0;
 let points = 0;
-let difficulty = "hard";
+let difficulty = "normal";
 
 /**
  * Generates a random integer within a range.
@@ -60,9 +61,9 @@ function setDelay(difficulty) {
  */
 function chooseHole(holes) {
   //Generate a random integer from 1-8
-  let index = randomInteger(0,8);
+  const index = randomInteger(0,8);
   //Get a random hole
-  let hole = holes[index];
+  const hole = holes[index];
   //If hole is last hole, choose again
   if (hole === lastHole) return chooseHole(holes);
   //If hole is not the last hole, keep track and return the hole
@@ -94,11 +95,11 @@ function gameOver() {
   //Determines if game should continue or stop
   //If time is left
   if (time > 0){
-    timeoutID = showUp()
+    let timeoutID = showUp();
     return timeoutID}
   else {
     gameStopped = stopGame()
-    return gameStopped
+    return gameStopped;
   }
 }
 
@@ -112,8 +113,8 @@ function gameOver() {
 *
 */
 function showUp() {
-  let delay = setDelay(difficulty); // TODO: Update so that it uses setDelay()
-  const hole = chooseHole(holes);  // TODO: Update so that it use chooseHole()
+  let delay = setDelay(difficulty); //Update so that it uses setDelay()
+  const hole = chooseHole(holes);  //Update so that it use chooseHole()
   return showAndHide(hole, delay);
 }
 
@@ -225,6 +226,7 @@ function setEventListeners(){
   return moles;
 }
 
+
 /**
 *
 * This function sets the duration of the game. The time limit, in seconds,
@@ -243,11 +245,28 @@ function setDuration(duration) {
 *
 */
 function stopGame(){
-  // stopAudio(song);  //optional
+  stopAudio(song);
   clearInterval(timer);
   return "game stopped";
 }
+/* Music functions */
+function playAudio(audioObject) {
+  audioObject.play();
+}
+/* Loop song*/
+function loopAudio(audioObject) {
+  audioObject.loop = true;
+  playAudio(audioObject);
+}
 
+/*Stop song*/
+function stopAudio(audioObject) {
+  audioObject.pause();
+}
+
+function play(){
+  loopAudio(song);
+}
 /**
 *
 * This is the function that starts the game when the `startButton`
@@ -256,6 +275,7 @@ function stopGame(){
 */
 function startGame(){
   setEventListeners();
+  play();
   setDuration(10);
   showUp();
   startTimer();
